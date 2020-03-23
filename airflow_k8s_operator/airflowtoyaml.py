@@ -67,7 +67,7 @@ class AirflowtoYaml:
 
         for module in os.listdir(self.dag_path):
             if self._is_a_python_module(module):
-                results += ((vars(__import__(module[:-3], locals(), globals()))))
+                results = (*results, [vars(__import__(module[:-3], locals(), globals()))])
 
         return results
 
