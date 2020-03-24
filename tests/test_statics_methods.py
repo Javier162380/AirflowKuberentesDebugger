@@ -1,4 +1,3 @@
-import pytest
 from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
 
 
