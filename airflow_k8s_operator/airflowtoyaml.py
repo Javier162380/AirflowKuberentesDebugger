@@ -1,7 +1,7 @@
 import inspect
 import os
 import sys
-from typing import List, Dict, Tuple
+from typing import Dict, List, Tuple
 import yaml
 
 from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
@@ -19,6 +19,36 @@ class AirflowtoYaml:
                  dag_name: str = None,
                  destination: str = None,
                  extra_commands: List[str] = None):
+        """Instance for generating Airflow to yaml object. For parameters are 
+           required. We are going to generate one kubernetes yaml template per
+           kubernetes pod operator task present in a Dag.
+
+        Parameters
+        ----------
+        dag_path : str
+            Path where the target dag or dags are place.
+        dag_name : str
+            Name of the dag we want to analyze.If not specified AirflowtoYaml it
+            is going to generate a template per kubernetes pod operator task 
+            for each dag persent in the dag_path.
+            Default None
+        destination : str
+           Path where we want to store the yaml files generated.
+           Default None      
+        extra_commands: list
+           Extra variables needed to start a local instance of Airflow. As an example
+           if your dag is using custom variables you should set them to be able to 
+           generate the templating otherwise the execution it is going to failed.
+           Example ['airflow variables --set KUBERNETES_NAMESPACE prod', 
+                    'airflow variables --set ENVIRONMENT_TAG prod'].
+           Default None
+
+        **WARNING 
+          You should take into account that not when an instance of AirflowtoYaml it is 
+          created but when, a the method ```generate_kubernetes_yamls()``` it is trigger
+          we are going to start an instance of sqlite with the ```airflow initdb``` command.
+          So we can replicate an Airflow enviroment locally
+           """
 
         self.dag_path = dag_path
         self.dag_name = dag_name
@@ -27,8 +57,8 @@ class AirflowtoYaml:
 
     @property
     def format_dag_name(self):
-
-        return self.dag_name[:-3] if self.dag_name.endswith('.py') else self.dag_name
+        if self.dag_name:
+            return self.dag_name[:-3] if self.dag_name.endswith('.py') else self.dag_name
 
     @staticmethod
     def _is_a_python_module(module: str) -> bool:
@@ -55,7 +85,7 @@ class AirflowtoYaml:
             for command in self.airflow_init_extra_commands:
                 os.system(command)
 
-    def load_airflow_modules(self) -> Tuple[List[Dict]]:
+    def load_airflow_modules(self) -> Tuple[Tuple[Dict]]:
 
         self.init_airflow()
         sys.path.append(self.dag_path)
@@ -73,8 +103,8 @@ class AirflowtoYaml:
 
     def generate_pod_template(self, operator: KubernetesPodOperator) -> Dict:
 
-        operator_attrs = operator.__dict__
-        pod_attrs = {attr: values for attr, values in operator_attrs.items() if attr in self.POD_ATTRIBUTES}
+        operator_attrs = operator.__dict__.items()
+        pod_attrs = {attr: values for attr, values in operator_attrs if attr in self.POD_ATTRIBUTES}
 
         # TODO: possible bug in airflow.
         if not 'envs' in pod_attrs:
