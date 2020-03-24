@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "airflow-k8s-operator"
 version = "0.1.0"
-description = ""
+description = "Package for generate kubernetes yaml templates from and Airflow dag"
 authors = ["javier162380 <javierllorente16@gmail.com>"]
 
 [tool.poetry.dependencies]
@@ -11,7 +11,7 @@ apache-airflow = {version = "1.10.9", extras = ["kubernetes", "gcp"]}
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
 autopep8 = "^1.5"
-pytest-mock = "2.0.0"
+pytest-mock = "^2.0.0"
 
 [build-system]
 requires = ["poetry>=0.12"]

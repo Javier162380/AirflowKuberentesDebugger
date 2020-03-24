@@ -826,7 +826,7 @@ google-cloud-core = ">=1.0.0,<2.0dev"
 grpc-google-iam-v1 = ">=0.11.4,<0.12dev"
 
 [package.dependencies.google-api-core]
-extras = ["grpcgcp", "grpc"]
+extras = ["grpc", "grpcgcp"]
 version = ">=1.4.1,<2.0.0dev"
 
 [[package]]
@@ -1876,7 +1876,7 @@ docs = ["sphinx"]
 test = ["zope.testrunner"]
 
 [metadata]
-content-hash = "fdd027527396a75fc37986b570a145b82780171978a1c5787e708d4f1f25fef3"
+content-hash = "8a4126873c2f76f3d13153890c56bef634580fc903710557a0242efb28c5890a"
 python-versions = "^3.6"
 
 [metadata.files]

@@ -19,8 +19,8 @@ class AirflowtoYaml:
                  dag_name: str = None,
                  destination: str = None,
                  extra_commands: List[str] = None):
-        """Instance for generating Airflow to yaml object. For parameters are 
-           required. We are going to generate one kubernetes yaml template per
+        """Instance to generate an AirflowtoYaml object. The instance it is created by
+           four parameters, but just one is mandatory. We are going to generate one kubernetes yaml template per
            kubernetes pod operator task present in a Dag.
 
         Parameters
@@ -28,26 +28,27 @@ class AirflowtoYaml:
         dag_path : str
             Path where the target dag or dags are place.
         dag_name : str
-            Name of the dag we want to analyze.If not specified AirflowtoYaml it
+            Name of the dag we want to analyze.If not specified AirflowtoYaml object it
             is going to generate a template per kubernetes pod operator task 
             for each dag persent in the dag_path.
             Default None
         destination : str
-           Path where we want to store the yaml files generated.
+           Path where we want to store the yaml files generated.If not specified the yaml
+           files are going to be created where the object it is invoked.
            Default None      
         extra_commands: list
            Extra variables needed to start a local instance of Airflow. As an example
            if your dag is using custom variables you should set them to be able to 
-           generate the templating otherwise the execution it is going to failed.
+           generate the templating otherwise, the execution it is going to failed.
            Example ['airflow variables --set KUBERNETES_NAMESPACE prod', 
                     'airflow variables --set ENVIRONMENT_TAG prod'].
            Default None
 
         **WARNING 
           You should take into account that not when an instance of AirflowtoYaml it is 
-          created but when, a the method ```generate_kubernetes_yamls()``` it is trigger
+          created but when the method ```generate_kubernetes_yamls()``` it is trigger
           we are going to start an instance of sqlite with the ```airflow initdb``` command.
-          So we can replicate an Airflow enviroment locally
+          So we can replicate an Airflow enviroment locally.
            """
 
         self.dag_path = dag_path
