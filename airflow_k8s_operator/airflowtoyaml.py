@@ -85,7 +85,7 @@ class AirflowtoYaml:
             for command in self.airflow_init_extra_commands:
                 os.system(command)
 
-    def load_airflow_modules(self) -> Tuple[Tuple[Dict]]:
+    def load_airflow_modules(self) -> Tuple[List[Dict]]:
 
         self.init_airflow()
         sys.path.append(self.dag_path)
