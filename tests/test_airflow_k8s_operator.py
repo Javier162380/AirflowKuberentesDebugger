@@ -11,7 +11,8 @@ def test_airflow_k8s_operator_instance(AirflowtoYamlClient):
     assert AirflowtoYamlClient.dag_name == 'example.py'
     assert AirflowtoYamlClient.destination == 'tests/fixtures'
     assert AirflowtoYamlClient.format_dag_name == 'example'
-    assert AirflowtoYamlClient.airflow_init_extra_commands == None
+    assert AirflowtoYamlClient.airflow_init_extra_commands == []
+    assert AirflowtoYamlClient.airflow_init_commands == 'airflow initdb'
 
 
 def test_airflow_k8s_operator_instance_with_extra_commands(AirflowtoYamlClientExtraCommands):
@@ -22,6 +23,7 @@ def test_airflow_k8s_operator_instance_with_extra_commands(AirflowtoYamlClientEx
     assert AirflowtoYamlClientExtraCommands.format_dag_name == 'example'
     assert AirflowtoYamlClientExtraCommands.airflow_init_extra_commands == [
         'airflow variables --set KUBERNETES_NAMESPACE prod', 'airflow variables --set ENVIRONMENT_TAG prod']
+    assert AirflowtoYamlClientExtraCommands.airflow_init_commands == 'airflow initdb && airflow variables --set KUBERNETES_NAMESPACE prod && airflow variables --set ENVIRONMENT_TAG prod'
 
 
 def test_airflow_k8s_operator_instance_withouth_default_arguments(AirflowtoYamlWithoutDefaultArguments):
@@ -29,4 +31,4 @@ def test_airflow_k8s_operator_instance_withouth_default_arguments(AirflowtoYamlW
     assert AirflowtoYamlWithoutDefaultArguments.dag_name == None
     assert AirflowtoYamlWithoutDefaultArguments.destination == None
     assert AirflowtoYamlWithoutDefaultArguments.format_dag_name == None
-    assert AirflowtoYamlWithoutDefaultArguments.airflow_init_extra_commands == None
+    assert AirflowtoYamlWithoutDefaultArguments.airflow_init_commands == 'airflow initdb'
