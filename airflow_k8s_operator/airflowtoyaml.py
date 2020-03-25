@@ -16,7 +16,7 @@ class AirflowtoYaml:
     POD_ATTRIBUTES = tuple(inspect.signature(Pod.__init__).parameters.keys())
     POD_REQUEST_FACTORY = SimplePodRequestFactory()
     POD_ID_SUFFIX = 'debug'
-    AIRFLOW_INIT_COMMANDS = ['airflow initdb']
+    AIRFLOW_INIT_COMMAND = 'airflow initdb'
 
     def __init__(self,
                  dag_path: str,
@@ -33,23 +33,23 @@ class AirflowtoYaml:
             Path where the target dag or dags are place.
         dag_name : str
             Name of the dag we want to analyze.If not specified AirflowtoYaml object it
-            is going to generate a template per kubernetes pod operator task 
+            is going to generate a template per kubernetes pod operator task
             for each dag persent in the dag_path.
             Default None
         destination : str
            Path where we want to store the yaml files generated.If not specified the yaml
            files are going to be created where the object it is invoked.
-           Default None      
+           Default None
         extra_commands: list
            Extra variables needed to start a local instance of Airflow. As an example
-           if your dag is using custom variables you should set them to be able to 
+           if your dag is using custom variables you should set them to be able to
            generate the templating otherwise, the execution it is going to failed.
-           Example ['airflow variables --set KUBERNETES_NAMESPACE prod', 
+           Example ['airflow variables --set KUBERNETES_NAMESPACE prod',
                     'airflow variables --set ENVIRONMENT_TAG prod'].
            Default None
 
-        **WARNING 
-          You should take into account that not when an instance of AirflowtoYaml it is 
+        **WARNING
+          You should take into account that not when an instance of AirflowtoYaml it is
           created but when the method ```generate_kubernetes_yamls()``` it is trigger
           we are going to start an instance of sqlite with the ```airflow initdb``` command.
           So we can replicate an Airflow enviroment locally.
@@ -67,9 +67,10 @@ class AirflowtoYaml:
 
     @property
     def airflow_init_commands(self):
-        self.AIRFLOW_INIT_COMMANDS.extend(self.airflow_init_extra_commands)
+        init_commands = [self.AIRFLOW_INIT_COMMAND]
+        init_commands.extend(self.airflow_init_extra_commands)
 
-        return ' && '.join(filter(None, self.AIRFLOW_INIT_COMMANDS))
+        return ' && '.join(filter(None, init_commands))
 
     @staticmethod
     def _is_a_python_module(module: str) -> bool:
