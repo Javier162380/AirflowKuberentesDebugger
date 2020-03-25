@@ -1,20 +1,28 @@
 version: 2
+
 jobs:
-  run_test:
+  build-and-test:
     docker:
-      - image: circleci/python:3.6.4
+      - image: circleci/python:3.6.9
+
     steps:
       - checkout
-      - run: sudo chown -R circleci:circleci /usr/local/bin
-      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
+      - restore_cache:
+          keys:
+            - deps-{{ checksum "poetry.lock" }}
+
       - run:
-          name: install dependencies.
+          name: Install Dependencies
           command: |
-            pip install --upgrade pip setuptools
-            pip install poetry
             poetry install -v
+
+      - save_cache:
+          key: deps-{{ checksum "poetry.lock" }}
+          paths:
+            - /home/circleci/.cache/pypoetry/virtualenvs
+
       - run:
-          name: running tests
+          name: Run Pytest,
           command: |
             poetry run pytest -vv
 workflows:
