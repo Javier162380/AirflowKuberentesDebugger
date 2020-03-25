@@ -26,7 +26,7 @@ def test_airflow_k8s_operator_instance_with_extra_commands(AirflowtoYamlClientEx
     assert AirflowtoYamlClientExtraCommands.airflow_init_commands == 'airflow initdb && airflow variables --set KUBERNETES_NAMESPACE prod && airflow variables --set ENVIRONMENT_TAG prod'
 
 
-def test_airflow_k8s_operator_instance_withouth_default_arguments(AirflowtoYamlWithoutDefaultArguments):
+def test_airflow_k8s_operator_instance_without_default_arguments(AirflowtoYamlWithoutDefaultArguments):
     assert AirflowtoYamlWithoutDefaultArguments.dag_path == 'tests/fixtures'
     assert AirflowtoYamlWithoutDefaultArguments.dag_name == None
     assert AirflowtoYamlWithoutDefaultArguments.destination == None
