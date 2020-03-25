@@ -9,7 +9,7 @@ def AirflowtoYamlClient():
 
     return AirflowtoYaml(dag_path='tests/fixtures',
                          dag_name='example.py',
-                         destination='tests/fixtures')
+                         destination='tests/outputs')
 
 
 @pytest.fixture()

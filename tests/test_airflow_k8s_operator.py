@@ -9,7 +9,7 @@ def test_airflow_k8s_operator_instance(AirflowtoYamlClient):
 
     assert AirflowtoYamlClient.dag_path == 'tests/fixtures'
     assert AirflowtoYamlClient.dag_name == 'example.py'
-    assert AirflowtoYamlClient.destination == 'tests/fixtures'
+    assert AirflowtoYamlClient.destination == 'tests/outputs'
     assert AirflowtoYamlClient.format_dag_name == 'example'
     assert AirflowtoYamlClient.airflow_init_extra_commands == []
     assert AirflowtoYamlClient.airflow_init_commands == 'airflow initdb'
