@@ -10,8 +10,9 @@ jobs:
       - run:
           name: install dependencies.
           command: |
-            sudo pip install poetry
-            poetry install
+            pip install --upgrade pip setuptools
+            pip install poetry
+            poetry install -v
       - run:
           name: running tests
           command: |
