@@ -7,18 +7,22 @@ import yaml
 from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
 from airflow.contrib.kubernetes.pod import Pod
 from airflow.contrib.kubernetes.kubernetes_request_factory.pod_request_factory import SimplePodRequestFactory
+from airflow.contrib.kubernetes.pod_generator import PodGenerator
 
 
 class AirflowtoYaml:
 
+    POD_GENERATOR_ATTRIBUTES = inspect.getfullargspec(PodGenerator().make_pod).args
     POD_ATTRIBUTES = tuple(inspect.signature(Pod.__init__).parameters.keys())
     POD_REQUEST_FACTORY = SimplePodRequestFactory()
+    POD_ID_SUFFIX = 'debug'
+    AIRFLOW_INIT_COMMANDS = ['airflow initdb']
 
     def __init__(self,
                  dag_path: str,
                  dag_name: str = None,
                  destination: str = None,
-                 extra_commands: List[str] = None):
+                 extra_commands: List[str] = []):
         """Instance to generate an AirflowtoYaml object. The instance it is created by
            four parameters, but just one is mandatory. We are going to generate one kubernetes yaml template per
            kubernetes pod operator task present in a Dag.
@@ -49,7 +53,7 @@ class AirflowtoYaml:
           created but when the method ```generate_kubernetes_yamls()``` it is trigger
           we are going to start an instance of sqlite with the ```airflow initdb``` command.
           So we can replicate an Airflow enviroment locally.
-           """
+        """
 
         self.dag_path = dag_path
         self.dag_name = dag_name
@@ -61,6 +65,12 @@ class AirflowtoYaml:
         if self.dag_name:
             return self.dag_name[:-3] if self.dag_name.endswith('.py') else self.dag_name
 
+    @property
+    def airflow_init_commands(self):
+        self.AIRFLOW_INIT_COMMANDS.extend(self.airflow_init_extra_commands)
+
+        return ' && '.join(filter(None, self.AIRFLOW_INIT_COMMANDS))
+
     @staticmethod
     def _is_a_python_module(module: str) -> bool:
 
@@ -71,6 +81,10 @@ class AirflowtoYaml:
 
         return isinstance(operator, KubernetesPodOperator)
 
+    def generate_pod_id_name(self, pod_name: str) -> str:
+
+        return f"{pod_name[:10]}_{self.POD_ID_SUFFIX}"
+
     def store_airflow_pod_template_in_yaml_file(self, data):
 
         pod_name = data['metadata']['name']
@@ -80,11 +94,7 @@ class AirflowtoYaml:
 
     def init_airflow(self):
 
-        os.system('airflow initdb')
-
-        if self.airflow_init_extra_commands:
-            for command in self.airflow_init_extra_commands:
-                os.system(command)
+        os.system(self.airflow_init_commands)
 
     def load_airflow_modules(self) -> Tuple[List[Dict]]:
 
@@ -104,17 +114,21 @@ class AirflowtoYaml:
 
     def generate_pod_template(self, operator: KubernetesPodOperator) -> Dict:
 
-        operator_attrs = operator.__dict__.items()
-        pod_attrs = {attr: values for attr, values in operator_attrs if attr in self.POD_ATTRIBUTES}
+        operator_attrs = operator.__dict__
+        pod_generator_attrs = {attr: values for attr, values in operator_attrs.items()
+                               if attr in self.POD_GENERATOR_ATTRIBUTES}
 
-        # TODO: possible bug in airflow.
-        if not 'envs' in pod_attrs:
-            pod_attrs['envs'] = {}
+        pod_generator_attrs['pod_id'] = self.generate_pod_id_name(operator_attrs['name'])
 
-        pod_instance = Pod(**(pod_attrs))
+        pod_instance = PodGenerator().make_pod(**pod_generator_attrs)
+
+        pod_attrs = {attr: values for attr, values in operator_attrs.items() if attr in self.POD_ATTRIBUTES}
+        for attr in pod_attrs:
+            setattr(pod_instance, attr, pod_attrs[attr])
+
         return self.POD_REQUEST_FACTORY.create(pod_instance)
 
-    def generte_kubernetes_yamls(self):
+    def generate_kubernetes_yamls(self):
 
         airflow_modules = self.load_airflow_modules()
 
