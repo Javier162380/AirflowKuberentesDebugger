@@ -1,21 +1,23 @@
-version: 2.1
-
-orbs:
-  python: circleci/python@0.2.1
-
+version: 2
 jobs:
-  build-and-test:
-    executor: python/default
+  run_test:
+    docker:
+      - image: circleci/python:3.6.4
     steps:
       - checkout
-      - python/load-cache
-      - python/install-deps
-      - python/save-cache
+      - run: sudo chown -R circleci:circleci /usr/local/bin
+      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
       - run:
-          command: ./manage.py test
-          name: Test
-
+          name: install dependencies.
+          command: |
+            sudo pip install poetry
+            poetry install --dev
+      - run:
+          name: running tests
+          command: |
+            poetry run pytest -vv
 workflows:
-  main:
+  version: 2
+  build_and_deploy:
     jobs:
-      - build-and-test
+      - run_test
