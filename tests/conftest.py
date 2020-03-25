@@ -1,6 +1,7 @@
 import pytest
 
 from airflow_k8s_operator import AirflowtoYaml
+from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
 
 
 @pytest.fixture()
