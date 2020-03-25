@@ -1,5 +1,5 @@
 from cli import cli
-import AirflowtoYaml
+from airflowtoyaml import AirflowtoYaml
 
 
 def main():
@@ -10,7 +10,7 @@ def main():
                                           destination=params.destination,
                                           extra_commands=params.extra_commands)
 
-    AirflowtoYamlInstance.generte_kubernetes_yamls()
+    AirflowtoYamlInstance.generate_kubernetes_yamls()
 
 
 if __name__ == "__main__":
