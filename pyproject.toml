@@ -12,6 +12,8 @@ apache-airflow = {version = "1.10.9", extras = ["kubernetes", "gcp"]}
 pytest = "^5.2"
 autopep8 = "^1.5"
 pytest-mock = "^2.0.0"
+coverage = "^5.0.4"
+pytest-cov = "^2.8.1"
 
 [build-system]
 requires = ["poetry>=0.12"]
