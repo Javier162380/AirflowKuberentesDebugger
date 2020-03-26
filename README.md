@@ -114,6 +114,7 @@ metadata:
   annotations: {}
   labels: {}
   name: ex-kube-secrets
+  namespace: default
 spec:
   affinity: {}
   containers:
@@ -140,12 +141,13 @@ spec:
   ex-pod-affinity.yaml
   
   ```yaml
-  apiVersion: v1
+apiVersion: v1
 kind: Pod
 metadata:
   annotations: {}
   labels: {}
   name: ex-pod-affinity
+  namespace: default
 spec:
   affinity:
     nodeAffinity:
@@ -186,6 +188,7 @@ metadata:
   labels:
     pod-label: label-name
   name: pi
+  namespace: default
 spec:
   affinity: {}
   containers:

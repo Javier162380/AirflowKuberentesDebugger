@@ -82,6 +82,11 @@ class AirflowtoYaml:
 
         return isinstance(operator, KubernetesPodOperator)
 
+    @staticmethod
+    def _add_extra_airflow_configuration(operator_attrs: Dict, k8s_template: Dict) -> Dict:
+
+        k8s_template['metadata']['namespace'] = operator_attrs.get('namespace', 'default')
+
     def generate_pod_id_name(self, pod_name: str) -> str:
 
         return f"{pod_name[:10]}_{self.POD_ID_SUFFIX}"
@@ -132,7 +137,10 @@ class AirflowtoYaml:
         if 'env_vars' in operator_attrs:
             setattr(pod_instance, 'envs', operator_attrs['env_vars'])
 
-        return self.POD_REQUEST_FACTORY.create(pod_instance)
+        post_template = self.POD_REQUEST_FACTORY.create(pod_instance)
+        self._add_extra_airflow_configuration(operator_attrs=operator_attrs, k8s_template=post_template)
+
+        return post_template
 
     def generate_kubernetes_yamls(self):
 
