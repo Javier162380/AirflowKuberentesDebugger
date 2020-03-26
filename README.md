@@ -215,6 +215,8 @@ spec:
 
 * By default, we are not connected to any kubernetes cluster so we are using the default service account value. If you want to run the template generated into an Airflow Cluster you need to add the cluster service account.
 
+* Right now the library just supports Airflow version >= 1.10.9 and the extras of kubernetes and gcp. If in the dag you are using other kinds of library as boto3 probably you are going to need to install it before using it.
+
 ## Installation
 
 The package is not yet available in py-pi so you need to install it from github , using the protocol you want.
