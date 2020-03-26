@@ -108,7 +108,7 @@ Using AirflowtoK8s will generate the following templates from this file.
   ex-kube-secrets.yaml
 
   ```yaml
-  apiVersion: v1
+apiVersion: v1
 kind: Pod
 metadata:
   annotations: {}
@@ -120,6 +120,8 @@ spec:
   - args: []
     command: []
     env:
+    - name: EXAMPLE_VAR
+      value: /example/value
     - name: SQL_CONN
       valueFrom:
         secretKeyRef:
@@ -170,12 +172,13 @@ spec:
   restartPolicy: Never
   serviceAccountName: default
   volumes: []
+
   ```
   
   pi.yaml
   
   ```yaml
-  apiVersion: v1
+apiVersion: v1
 kind: Pod
 metadata:
   annotations:
@@ -192,6 +195,9 @@ spec:
     - print bpi(2000)
     command:
     - perl
+    env:
+    - name: EXAMPLE_VAR
+      value: /example/value
     image: perl
     imagePullPolicy: Always
     name: base

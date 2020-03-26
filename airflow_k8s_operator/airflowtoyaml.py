@@ -127,6 +127,11 @@ class AirflowtoYaml:
         for attr in pod_attrs:
             setattr(pod_instance, attr, pod_attrs[attr])
 
+        # TODO. Posible Airflow inconsistency as in the KubernetesPodOperator use the parameter env_Vars and later
+        # when the pod is created it is used the convention env.
+        if 'env_vars' in operator_attrs:
+            setattr(pod_instance, 'envs', operator_attrs['env_vars'])
+
         return self.POD_REQUEST_FACTORY.create(pod_instance)
 
     def generate_kubernetes_yamls(self):

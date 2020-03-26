@@ -24,6 +24,7 @@ def test_generate_pod_template_integration(mocker, AirflowtoYamlClient):
              'containers':
              [{'name': 'base', 'image': 'bash', 'command': ['echo'],
                'imagePullPolicy': 'IfNotPresent', 'args': ['{{ ds }}'],
+               'env': [{'name': 'MY_VALUE', 'value': '{{ var.value.my_value }}'}],
                'ports': []}],
              'restartPolicy': 'Never', 'nodeSelector': {},
              'volumes': [],
@@ -36,8 +37,9 @@ def test_generate_pod_template_integration(mocker, AirflowtoYamlClient):
             [{'name': 'base', 'image': 'ubuntu', 'command': [],
               'imagePullPolicy': 'IfNotPresent', 'args': [],
               'env':
-              [{'name': 'SQL_CONN', 'valueFrom':
-                {'secretKeyRef': {'name': 'airflow-secrets', 'key': 'sql_alchemy_conn'}}}],
+              [{'name': 'EXAMPLE_VAR', 'value': '/example/value'},
+               {'name': 'SQL_CONN', 'valueFrom':
+                  {'secretKeyRef': {'name': 'airflow-secrets', 'key': 'sql_alchemy_conn'}}}],
                 'ports': []}],
             'restartPolicy': 'Never', 'nodeSelector': {},
             'volumes': [],
@@ -71,6 +73,7 @@ def test_generate_pod_template_integration(mocker, AirflowtoYamlClient):
              'containers':
              [{'name': 'base', 'image': 'perl', 'command': ['perl'],
                'imagePullPolicy': 'Always', 'args': ['-Mbignum=bpi', '-wle', 'print bpi(2000)'],
+               'env': [{'name': 'EXAMPLE_VAR', 'value': '/example/value'}],
                'ports': [],
                'resources': {'limits': {'memory': 1, 'cpu': 1}}}],
              'restartPolicy': 'Never', 'nodeSelector': {},
