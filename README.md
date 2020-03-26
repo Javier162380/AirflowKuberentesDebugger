@@ -107,35 +107,35 @@ Using AirflowtoK8s will generate the following templates from this file.
   
   ex-kube-secrets.yaml
 
-  ```yaml
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
-  annotations: {}
-  labels: {}
-  name: ex-kube-secrets
-  namespace: default
+    annotations: {}
+    labels: {}
+    name: ex-kube-secrets
+    namespace: default
 spec:
-  affinity: {}
-  containers:
-  - args: []
-    command: []
-    env:
-    - name: EXAMPLE_VAR
-      value: /example/value
-    - name: SQL_CONN
-      valueFrom:
-        secretKeyRef:
-          key: sql_alchemy_conn
-          name: airflow-secrets
-    image: ubuntu
-    imagePullPolicy: IfNotPresent
-    name: base
-    ports: []
-  nodeSelector: {}
-  restartPolicy: Never
-  serviceAccountName: default
-  volumes: []
+    affinity: {}
+    containers:
+        - args: []
+        command: []
+        env:
+        - name: EXAMPLE_VAR
+            value: /example/value
+        - name: SQL_CONN
+            valueFrom:
+            secretKeyRef:
+                key: sql_alchemy_conn
+                name: airflow-secrets
+        image: ubuntu
+        imagePullPolicy: IfNotPresent
+        name: base
+        ports: []
+    nodeSelector: {}
+    restartPolicy: Never
+    serviceAccountName: default
+    volumes: []
   ```
   
   ex-pod-affinity.yaml
@@ -144,36 +144,36 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  annotations: {}
-  labels: {}
-  name: ex-pod-affinity
-  namespace: default
+    annotations: {}
+    labels: {}
+    name: ex-pod-affinity
+    namespace: default
 spec:
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: cloud.google.com/gke-nodepool
-            operator: In
-            values:
-            - pool-0
-            - pool-1
-  containers:
-  - args:
-    - -Mbignum=bpi
-    - -wle
-    - print bpi(2000)
-    command:
-    - perl
-    image: perl
-    imagePullPolicy: IfNotPresent
-    name: base
-    ports: []
-  nodeSelector: {}
-  restartPolicy: Never
-  serviceAccountName: default
-  volumes: []
+    affinity:
+        nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+            - key: cloud.google.com/gke-nodepool
+                operator: In
+                values:
+                - pool-0
+                - pool-1
+    containers:
+    - args:
+        - -Mbignum=bpi
+        - -wle
+        - print bpi(2000)
+        command:
+        - perl
+        image: perl
+        imagePullPolicy: IfNotPresent
+        name: base
+        ports: []
+    nodeSelector: {}
+    restartPolicy: Never
+    serviceAccountName: default
+    volumes: []
 
   ```
   
@@ -183,36 +183,36 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  annotations:
-    key1: value1
-  labels:
-    pod-label: label-name
-  name: pi
-  namespace: default
+    annotations:
+        key1: value1
+    labels:
+        pod-label: label-name
+    name: pi
+    namespace: default
 spec:
-  affinity: {}
-  containers:
-  - args:
-    - -Mbignum=bpi
-    - -wle
-    - print bpi(2000)
-    command:
-    - perl
-    env:
-    - name: EXAMPLE_VAR
-      value: /example/value
-    image: perl
-    imagePullPolicy: Always
-    name: base
-    ports: []
-    resources:
-      limits:
-        cpu: 1
-        memory: 1
-  nodeSelector: {}
-  restartPolicy: Never
-  serviceAccountName: default
-  volumes: []
+    affinity: {}
+    containers:
+    - args:
+        - -Mbignum=bpi
+        - -wle
+        - print bpi(2000)
+        command:
+        - perl
+        env:
+        - name: EXAMPLE_VAR
+        value: /example/value
+        image: perl
+        imagePullPolicy: Always
+        name: base
+        ports: []
+        resources:
+        limits:
+            cpu: 1
+            memory: 1
+    nodeSelector: {}
+    restartPolicy: Never
+    serviceAccountName: default
+    volumes: []
 
   ```
   
