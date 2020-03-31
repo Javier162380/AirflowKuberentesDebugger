@@ -4,6 +4,7 @@ import sys
 from typing import Dict, List, Tuple
 import yaml
 
+from airflow.models import DAG
 from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
 from airflow.contrib.kubernetes.pod import Pod
 from airflow.contrib.kubernetes.kubernetes_request_factory.pod_request_factory import SimplePodRequestFactory
@@ -83,6 +84,11 @@ class AirflowtoYaml:
         return isinstance(operator, KubernetesPodOperator)
 
     @staticmethod
+    def _is_a_airflow_dag(var: object) -> bool:
+
+        return isinstance(var, DAG)
+
+    @staticmethod
     def _add_extra_airflow_configuration(operator_attrs: Dict, k8s_template: Dict) -> Dict:
 
         k8s_template['metadata']['namespace'] = operator_attrs.get('namespace', 'default')
@@ -146,9 +152,14 @@ class AirflowtoYaml:
 
         airflow_modules = self.load_airflow_modules()
 
+        dag_tasks = []
         for module in airflow_modules:
             for var in module:
-                obj = module[var]
-                if self._is_a_airflow_kubernetes_operator(obj):
-                    pod_template = self.generate_pod_template(obj)
-                    self.store_airflow_pod_template_in_yaml_file(pod_template)
+                var_output = module[var]
+                if self._is_a_airflow_dag(var_output):
+                    dag_tasks.extend(var_output.tasks)
+
+        for task in dag_tasks:
+            if self._is_a_airflow_kubernetes_operator(task):
+                pod_template = self.generate_pod_template(task)
+                self.store_airflow_pod_template_in_yaml_file(pod_template)

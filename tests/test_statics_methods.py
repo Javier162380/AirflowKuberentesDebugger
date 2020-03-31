@@ -1,4 +1,5 @@
 from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
+from airflow.models import DAG
 
 
 def test_is_a_python_module(AirflowtoYamlClient):
@@ -26,3 +27,15 @@ def test_is_a_airflow_kubernetes_operator(AirflowtoYamlClient):
 
     assert string_object_results == False
     assert kubernetes_operator_results == True
+
+
+def test_is_a_airflow_dag_object(AirflowtoYamlClient):
+
+    string_object = str
+    dag = DAG('test', 'test dag')
+
+    string_object_results = AirflowtoYamlClient._is_a_airflow_dag(string_object)
+    dag_results = AirflowtoYamlClient._is_a_airflow_dag(dag)
+
+    assert string_object_results == False
+    assert dag_results == True
