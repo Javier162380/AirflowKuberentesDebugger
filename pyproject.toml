@@ -6,7 +6,7 @@ authors = ["javier162380 <javierllorente16@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.6"
-apache-airflow = {version = "1.10.9", extras = ["kubernetes", "gcp"]}
+apache-airflow = {version = "1.10.14", extras = ["kubernetes", "gcp"]}
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
